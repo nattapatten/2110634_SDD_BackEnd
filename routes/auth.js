@@ -15,6 +15,7 @@ router.delete('/users/:id', protect, authorize('admin'), deleteUser);
 router.post('/verify-otp', verifyOtp);
 
 
+//Use this without Protect and authorize
 // router.post('/register', register);
 // router.post('/login', login);
 // router.get('/me',  getMe);
