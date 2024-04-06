@@ -19,10 +19,14 @@ app.use(cookieParser());
 
 
 const auth = require('./routes/auth');
+const assignment=require('./routes/assignments');
+const course=require('./routes/Course');
 
 app.use('/api/v1/auth', auth);
+app.use('/api/v1/assignments',assignment);
+app.use('/api/v1/courses',course);
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, console.log('Server running in', process.env.NODE_ENV, ' mode on port ', PORT));
 
 process.on('unhandledRejection', (err, promise) => {
