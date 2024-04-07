@@ -20,11 +20,14 @@ app.use(cookieParser());
 
 const auth = require('./routes/auth');
 const assignment=require('./routes/assignments');
-const course=require('./routes/Course');
+const course=require('./routes/course');
+const student=require('./routes/student');
 
 app.use('/api/v1/auth', auth);
 app.use('/api/v1/assignments',assignment);
 app.use('/api/v1/courses',course);
+app.use('/api/v1/student',student);
+
 
 const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, console.log('Server running in', process.env.NODE_ENV, ' mode on port ', PORT));

@@ -5,7 +5,7 @@ const AssignmentSchema=new mongoose.Schema({
 		type: Date,
 		required:true
 	},
-    studentId: {
+    studentID: {
 		type:mongoose.Schema.ObjectId,
 		ref: 'User',
 		required:true

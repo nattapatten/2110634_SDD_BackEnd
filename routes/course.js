@@ -5,12 +5,12 @@ const {getCourse,getCourses,updateCourse,deleteCourse,createCourse} = require('.
 const assignmentRouter = require('./assignments');
 
 const router = express.Router();
-const {protect, authorize} = require('../middleware/auth');
+const {protect,protect2, authorize} = require('../middleware/auth');
 
 //Re-route into other resource routers
 router.use('/:courseId/assignments',assignmentRouter);
 
-router.route('/').get(getCourses).post(protect, authorize('teacher'), createCourse);
-router.route('/:id').get(getCourse).put(protect, authorize('teacher'), updateCourse).delete(protect, authorize('teacher'), deleteCourse);
+router.route('/').get(getCourses).post(protect2, authorize('teacher'), createCourse);
+router.route('/:id').get(getCourse).put(protect2, authorize('teacher'), updateCourse).delete(protect2, authorize('teacher'), deleteCourse);
 
 module.exports=router;

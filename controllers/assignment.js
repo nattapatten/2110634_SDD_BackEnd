@@ -96,7 +96,8 @@ exports.getAssignment = async (req, res, next) => {
 	try {
 		// console.log(req.params)
 		// const assignment = await Assignment.findById(req.params.id).populate({
-		const assignment = await Assignment.find({ studentId: req.params.id });
+			console.log(req.body.studentID)
+		const assignment = await Assignment.find({ studentID: req.body.studentID });
 		// console.log(assignment)
 		// populate({
 		// 	path:'course',
@@ -132,29 +133,22 @@ exports.createAssignment = async (req, res, next) => {
 
 		//add user id to req.body
 		req.body.user = req.user.id;
-		// console.log(req.)
-		//Check for existed appointment
-		const existedAssignments=await Assignment.find({user:req.user.id,assignmentTopic:req.params.assignmentTopic});
+		// console.log(req.body.user)
+
+		// //Check for existed appointment
+		const existedAssignments=await Assignment.find({user:req.body.id,assignmentTopic:req.params.assignmentTopic});
 
 		//If the user is not an admin, thep can only create 3 appointment.
 		console.log(existedAssignments.length)
-		// if(existedAssignments.length >= 1){
-		// 	return res.status(400).json({
-		// 		success:false,
-		// 		message:`The user with ID ${req.user.id} has already have this assignment`
-		// 	});
-		// }
-
-		// //If the user is not an admin, thep can only create 3 appointment.
-		// if(existedAssignment.length >= 0 && req.user.role !== 'teacher'){
-		// 	return res.status(400).json({
-		// 		success:false,
-		// 		message:`The user with ID ${req.user.id} can't add assignment`
-		// 	});
-		// }
+		if(existedAssignments.length >= 1){
+			return res.status(400).json({
+				success:false,
+				message:`The user with ID ${req.user.id} has already have this assignment`
+			});
+		}
 
 		const assignment = await Assignment.create(req.body);
-		res.status(200).json({
+			res.status(200).json({
 			success: true,
 			data: assignment
 		});
@@ -169,13 +163,13 @@ exports.createAssignment = async (req, res, next) => {
 };
 
 //@desc		Update assignments
-//@route	PUT /api/v1/assignments/:courseID/:studentid
+//@route	PUT /api/v1/assignments/:courseID/:studentID
 //@access	Private
 exports.updateAssignment = async (req, res, next) => {
 	try {
 		// console.log(req.params.courseId);
-		// console.log(req.params.studentId);
-		let assignment = await Assignment.find({ courseId: req.params.courseId, studentId: req.params.studentId, assignmentTopic: req.body.assignmentTopic});
+		// console.log(req.params.studentID);
+		let assignment = await Assignment.find({ courseId: req.params.courseId, studentID: req.params.studentID, assignmentTopic: req.body.assignmentTopic});
 		console.log(assignment);
 		console.log("1");
 		if (!assignment) {
@@ -198,7 +192,7 @@ exports.updateAssignment = async (req, res, next) => {
 		console.log(req.body);
 
 		let assignment2 = await Assignment.updateOne(
-			{ courseId: req.params.courseId, studentId: req.params.studentId, assignmentTopic: req.body.assignmentTopic }, {
+			{ courseId: req.params.courseId, studentID: req.params.studentID, assignmentTopic: req.body.assignmentTopic }, {
 			$set: 
             {
                 assignmentDetail: req.body.assignmentDetail,
@@ -210,7 +204,7 @@ exports.updateAssignment = async (req, res, next) => {
 		console.log("4");
 		// console.log(req.params.id); 
 		// console.log(req.body.assignmentDetail);
-		// appointment=await Assignment.findByIdAndUpdate({studentId:req.params.id},{studentId:req.body},{
+		// appointment=await Assignment.findByIdAndUpdate({studentID:req.params.id},{studentID:req.body},{
 		// 	$set: 
         //     {
         //         assignmentDetail: req.body.assignmentDetail,
@@ -219,7 +213,7 @@ exports.updateAssignment = async (req, res, next) => {
         //     }
 		// }); 
 
-		assignment = await Assignment.find({ courseId: req.params.courseId, studentId: req.params.studentId, assignmentTopic: req.body.assignmentTopic});		console.log(assignment);
+		assignment = await Assignment.find({ courseId: req.params.courseId, studentID: req.params.studentID, assignmentTopic: req.body.assignmentTopic});		console.log(assignment);
 		res.status(200).json({
 			success: true,
 			data: assignment

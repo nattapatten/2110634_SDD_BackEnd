@@ -100,7 +100,7 @@ exports.createCourse = async (req, res, next) => {
 //@access   Private
 exports.updateCourse = async (req, res, next) => {
     try {
-        const course = await Hospital.findByIdAndUpdate(req.params.id, req.body, {
+        const course = await Course.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
             runValidators: true
         });
@@ -120,12 +120,12 @@ exports.updateCourse = async (req, res, next) => {
 //@access   Private
 exports.deleteCourse = async (req, res, next) => {
     try {
-        const course = await Hospital.findById(req.params.id);
+        const course = await Course.findById(req.params.id);
        
         if (!course) {
             return res.status(400).json({ success: false });
         }
-        await hospital.deleteOne();
+        await course.deleteOne();
         res.status(200).json({ success: true, data: {} });
     } catch (err) {
         res.status(400).json({ success: false });
