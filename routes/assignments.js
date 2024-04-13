@@ -1,15 +1,20 @@
 const express = require('express');
-const { getAssignments,getAssignment,createAssignment,updateAssignment,getStudentAssignment} = require('../controllers/assignment');
-
-
+const { getAssignment,getAssignmentbyCourseID,getAssignmentbyUserID,createAssignment,updateAssignment, deleteAssignment} = require('../controllers/assignment');
 
 const router = express.Router({mergeParams:true});
 const {protect,protect2, authorize} = require('../middleware/auth');
 
+router.route('/').post(protect2,authorize('teacher'),createAssignment);
+router.route('/getByCourseID').get(getAssignmentbyCourseID);
+router.route('/getByUserID').get(getAssignmentbyUserID);
+router.route('/getByUserIDandCourseID').get(getAssignment);
+router.route('/').put(protect2, updateAssignment);
+router.delete('/',protect,deleteAssignment);
 
-
-router.route('/').get(getAssignments).post(protect2,authorize('teacher'),createAssignment);
-router.route('/getMyAssign').get(getAssignment);
-router.route('/:courseId/:studentID').put(protect2, authorize('teacher'), updateAssignment);
+// router.get('/me',protect2, getStudent);
+// router.get('/', getStudent,getStudentbyID);
+// router.post('/', createStudent);
+// router.put('/',protect,updateStudent);
+// router.delete('/',protect,deleteStudent);
 
 module.exports=router;

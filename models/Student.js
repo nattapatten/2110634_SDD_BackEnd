@@ -3,6 +3,13 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 const StudentSchema=new mongoose.Schema({
+    title: {
+        type: String,
+        required: [true, 'Please add a status']
+    },
+    // image: {
+    //     type: ImageBitmap
+    // },
     studentID: {
         type: String,
         required: [true, 'Please add a student ID']
@@ -33,14 +40,26 @@ const StudentSchema=new mongoose.Schema({
         enum : ['user','admin','publisher','student','teacher','commitee'],
         default : 'student'
     },
-	pathId: {
+	path: {
 		type:String,
 		required:true
 	},
-	registDate: {
+    status:{
+        type: String,
+        required: [true, 'Please add a status'],
+    },
+    gpa:{
+        type: String,
+        required: [true, 'Please add a gpa'],
+    },
+    registDate: {
 		type: Date,
 		default: Date.now,
 	},
+    lastUpdated:{
+        type: Date,
+		default: Date.now,
+    },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
 });

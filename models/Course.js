@@ -2,29 +2,37 @@ const mongoose = require('mongoose');
 const Assignment = require('./Assignment');
 
 const CourseSchema = new mongoose.Schema({
-    couresName:{
-        type:String,
-        required : [true,'Please add a course name.'],
-        unique : true,
-        trim : true,
-        maxlength : [50 , 'Name can not be more than 50 characters']
-    },
     courseId:{
         type:String,
         required : [true,'Please add a course Id'],
-        maxlength : [7, 'Postal Code can not be more than 6 digits']
-
+        maxlength : [7, 'course Code can not be more than 7 digits']
     },
-    teacherName:{
+    courseName:{
         type:String,
         required : [true,'Please add a course name.'],
         unique : true,
         trim : true,
         maxlength : [50 , 'Name can not be more than 50 characters']
     },
-    tel:{
-        type:String
-    }
+    maxStudents:{
+        type:String,
+        required : [true,'Please add a maxStudents.'],
+    },
+    currentStudents:{
+        type:String,
+        required : [true,'Please add a currentStudents.'],
+    },
+    image:{
+        type:String,
+        required : [true,'Please add a image.'],
+    },
+    advisorID:{
+        type:String,
+        required : [true,'Please add a advisor Id'],
+        maxlength : [6, 'advisor Code can not be more than 6 digits']
+    },
+    
+
 },{
     toJSON: {virtuals:true},
     toObject: {virtuals:true}

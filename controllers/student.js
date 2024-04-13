@@ -10,9 +10,29 @@ const Student = require('../models/Student')
 //@access	private
 exports.getStudent = async (req, res, next) => {
     console.log("getStudent")
-	console.log(req.user)
+	// console.log(req.user)
 	let query = await Student.findById(req.user.id);
-	console.log("query Student")
+	// console.log("query Student")
+	try {
+		const student = await query;
+		res.status(200).json({
+			success: true,
+			data: student
+		});
+	} catch (error) {
+		console.log(error);
+		return res.status(500).json({ success: false, message: "Cannot find student" });
+	}
+};
+
+//@desc		Get student detail by 
+//@route	GET /api/v1/student/
+//@access	private
+exports.getStudentbyID = async (req, res, next) => {
+    console.log("getStudentbyID")
+	console.log({studentID:req.body.studentID})
+	let query = await Student.find({studentID:req.body.studentID});
+	// console.log("query StudentbyID")
 	try {
 		const student = await query;
 		res.status(200).json({
@@ -31,15 +51,18 @@ exports.getStudent = async (req, res, next) => {
 exports.createStudent = async (req, res, next) => {
     console.log("createStudent")
     try{
-        const {studentID, name, email, password,role, phone,pathId } = req.body;
+        const {title,studentID, name, email, password,phone,role,path,status,gpa } = req.body;
         const student = await Student.create({
-            studentID,  
+            title,  
+            studentID,
             name,
             email,
             password,
             phone,
             role,
-            pathId
+            path,
+            status,
+            gpa
         });
         //Create token
         // const token = student.getSignedJwtToken();

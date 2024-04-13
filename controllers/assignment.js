@@ -65,45 +65,51 @@ exports.getMe = async (req, res, next) => {
 };
 
 //@desc		Get single assignment
-//@route	GET /api/v1/assignments/:id
+//@route	GET /api/v1/assignments
 //@access	Public
-// exports.getAssignment=async (req,res,next)=>{
-// 	try {
-// 		const assignment = await Assignment.findById(req.params.id).populate({
-// 			path:'course',
-// 			select:'assignment assignmentTopic assignmentDetail dueDate'
-// 		});
+exports.getAssignmentbyUserID = async (req, res, next) => {
+	try {
+		const assignment = await Assignment.find({ studentID: req.body.studentID });
+		if (!assignment) {
 
-// 		if(!assignment){
-// 			return res.status(404).json({success:false,message:`No assignment with the id of ${req.params.id}`});
-// 		}
+			return res.status(404).json({ success: false, message: `No assignment with the id of ${req.params.id}` });
+		}
 
-// 		res.status(200).json({
-// 			seccess:true,
-// 			data: assignment
-// 		});
-// 	} catch (error) {
-// 		console.log(error);
-// 		return res.status(500).json({sucess:false,message:"Cannot find assignment"});
-// 	}
-// };
-
+		res.status(200).json({
+			seccess: true,
+			data: assignment
+		});
+	} catch (error) {
+		console.log(error);
+		return res.status(500).json({ sucess: false, message: "Cannot find assignment" });
+	}
+};
 
 //@desc		Get single assignment
-//@route	GET /api/v1/assignments/:id
+//@route	GET /api/v1/assignments
+//@access	Public
+exports.getAssignmentbyCourseID = async (req, res, next) => {
+	try {
+		const assignment = await Assignment.find({ courseID: req.body.courseID });
+		if (!assignment) {
+			return res.status(404).json({ success: false, message: `No assignment with the id of ${req.params.id}`});
+		}
+		res.status(200).json({
+			seccess: true,
+			data: assignment
+		});
+	} catch (error) {
+		console.log(error);
+		return res.status(500).json({ sucess: false, message: "Cannot find assignment" });
+	}
+};
+
+//@desc		Get single assignment
+//@route	GET /api/v1/assignments
 //@access	Public
 exports.getAssignment = async (req, res, next) => {
 	try {
-		// console.log(req.params)
-		// const assignment = await Assignment.findById(req.params.id).populate({
-			console.log(req.body.studentID)
-		const assignment = await Assignment.find({ studentID: req.body.studentID });
-		// console.log(assignment)
-		// populate({
-		// 	path:'course',
-		// 	select:'assignment assignmentTopic assignmentDetail dueDate'
-		// });
-
+		const assignment = await Assignment.find({ studentID: req.body.studentID, courseID: req.body.courseID });
 		if (!assignment) {
 
 			return res.status(404).json({ success: false, message: `No assignment with the id of ${req.params.id}` });
@@ -120,35 +126,36 @@ exports.getAssignment = async (req, res, next) => {
 };
 
 //@desc		create assignment
-//@route	POST /api/v1/course/:courseId/assignment
+//@route	POST /api/v1/assignment
 //@access	Private
 exports.createAssignment = async (req, res, next) => {
+	console.log("createAssignment")
 	try {
-		req.body.course = req.params.courseId;
-		const course = await Course.findById(req.params.courseId);
+		const assignment = await Assignment.create(req.body);
+		res.status(201).json({ success: true, data: assignment });
+	} catch (err) {
+		res.status(400).json({ success: false });
+		console.log(err.stack);
+	}
+};
 
-		if (!course) {
-			return res.status(404).json({ sucess: false, message: `No course with the id of ${req.params.courseId}` });
-		}
-
-		//add user id to req.body
-		req.body.user = req.user.id;
-		// console.log(req.body.user)
-
-		// //Check for existed appointment
-		const existedAssignments=await Assignment.find({user:req.body.id,assignmentTopic:req.params.assignmentTopic});
-
-		//If the user is not an admin, thep can only create 3 appointment.
-		console.log(existedAssignments.length)
-		if(existedAssignments.length >= 1){
-			return res.status(400).json({
-				success:false,
-				message:`The user with ID ${req.user.id} has already have this assignment`
+//@desc		Update assignments
+//@route	PUT /api/v1/assignments/
+//@access	Private
+exports.updateAssignment = async (req, res, next) => {
+	console.log("updateAssignment")
+	try {
+		const assignment = await Assignment.findOneAndUpdate({ studentID: req.body.studentID, courseID: req.body.courseID, title: req.body.title }, req.body, {
+			new: true,
+			runValidators: true
+		});
+		if (!assignment) {
+			return res.status(404).json({
+				success: false,
+				msg: 'assignment not found'
 			});
 		}
-
-		const assignment = await Assignment.create(req.body);
-			res.status(200).json({
+		res.status(200).json({
 			success: true,
 			data: assignment
 		});
@@ -156,73 +163,35 @@ exports.createAssignment = async (req, res, next) => {
 		console.log(error);
 		return res.status(500).json({
 			success: false,
-			message: "Cannot create assignment"
+			message: "Cannot update Assignment"
 		});
 	}
-
 };
 
-//@desc		Update assignments
-//@route	PUT /api/v1/assignments/:courseID/:studentID
-//@access	Private
-exports.updateAssignment = async (req, res, next) => {
+// Delete user
+// route DELETE /api/v1/assignment
+// access Private/Admin
+exports.deleteAssignment = async (req, res, next) => {
+	console.log("delete Assignment")
+	console.log({ studentID: req.body.studentID })
 	try {
-		// console.log(req.params.courseId);
-		// console.log(req.params.studentID);
-		let assignment = await Assignment.find({ courseId: req.params.courseId, studentID: req.params.studentID, assignmentTopic: req.body.assignmentTopic});
-		console.log(assignment);
-		console.log("1");
+		const assignment = await Assignment.deleteMany({ studentID: req.body.studentID });
+
 		if (!assignment) {
 			return res.status(404).json({
 				success: false,
-				message: `No assignment with the id of ${req.params.id}`
+				msg: 'assignment not found'
 			});
 		}
-		console.log("2");
 
-		// Make sure user is the appointment owner
-		// if(assignment.user.toString()!== req.user.id && req.user.role !== 'teacher'){
-		// 	return res.status(401).json({
-		// 		success:false,
-		// 		message:`User ${req.params.id} is not authorized to update this assignment`
-		// 	});
-		// }
-		console.log("3");
-		// console.log(req.params.id); 
-		console.log(req.body);
-
-		let assignment2 = await Assignment.updateOne(
-			{ courseId: req.params.courseId, studentID: req.params.studentID, assignmentTopic: req.body.assignmentTopic }, {
-			$set: 
-            {
-                assignmentDetail: req.body.assignmentDetail,
-                // new: true,
-                // runValidators: true
-            }
-		});
-		console.log(assignment2);
-		console.log("4");
-		// console.log(req.params.id); 
-		// console.log(req.body.assignmentDetail);
-		// appointment=await Assignment.findByIdAndUpdate({studentID:req.params.id},{studentID:req.body},{
-		// 	$set: 
-        //     {
-        //         assignmentDetail: req.body.assignmentDetail,
-        //         new: true,
-        //         runValidators: true
-        //     }
-		// }); 
-
-		assignment = await Assignment.find({ courseId: req.params.courseId, studentID: req.params.studentID, assignmentTopic: req.body.assignmentTopic});		console.log(assignment);
 		res.status(200).json({
 			success: true,
-			data: assignment
+			data: {}
 		});
-	} catch (error) {
-		// console.log(error);
-		// return res.status(500).json({
-		// 	success:false,
-		// 	message:"Cannot update Assignment"
-		// });
+	} catch (err) {
+		res.status(400).json({
+			success: false,
+			msg: err.message
+		});
 	}
 };

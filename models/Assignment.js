@@ -1,32 +1,34 @@
 const mongoose = require('mongoose');
-
+// >> questData
 const AssignmentSchema=new mongoose.Schema({
-    dueDate: {
-		type: Date,
-		required:true
-	},
     studentID: {
-		type:mongoose.Schema.ObjectId,
-		ref: 'User',
-		required:true
-    },
-    assignmentTopic: {
 		type:String,
 		required:true
     },
-    assignmentDetail: {
+	courseID: {
 		type:String,
-		required:true
-    },
-	course: {
-		type:mongoose.Schema.ObjectId,
-		ref: 'Course',
 		required:true
 	},
-	createDate: {
+	courseID: {
+		type:String,
+		required:true
+	},
+    title: {
+		type:String,
+		required:true
+    },
+    description: {
+		type:String,
+		required:true
+    },
+	time: {
 		type: Date,
 		default: Date.now,
 	},
+	dueDate: {
+		type: Date,
+		required:true
+	}
 });
 
 module.exports=mongoose.model('Assignment', AssignmentSchema);
