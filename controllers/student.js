@@ -113,7 +113,6 @@ exports.updateStudent = async (req, res, next) => {
                 msg: 'Student not found'
             });
         }
-
         res.status(200).json({
             success: true,
             data: student

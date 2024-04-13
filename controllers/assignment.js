@@ -176,14 +176,12 @@ exports.deleteAssignment = async (req, res, next) => {
 	console.log({ studentID: req.body.studentID })
 	try {
 		const assignment = await Assignment.deleteMany({ studentID: req.body.studentID });
-
 		if (!assignment) {
 			return res.status(404).json({
 				success: false,
 				msg: 'assignment not found'
 			});
 		}
-
 		res.status(200).json({
 			success: true,
 			data: {}
