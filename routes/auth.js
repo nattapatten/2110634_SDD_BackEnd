@@ -1,5 +1,5 @@
 const express = require('express');
-const {register, login, getMe, getUsers, updateUser, deleteUser, verifyOtp} = require('../controllers/auth');
+const {register, login, getMe, getUsers, updateUser, deleteUser, verifyOtp, verifyOtpRegistration} = require('../controllers/auth');
 
 const router = express.Router();
 
@@ -15,7 +15,7 @@ router.delete('/users/:id', protect, authorize('admin'), deleteUser);
 router.post('/verify-otp', verifyOtp);
 
 
-//Use this without Protect and authorize
+// Use this without Protect and authorize
 // router.post('/register', register);
 // router.post('/login', login);
 // router.get('/me',  getMe);
@@ -23,4 +23,7 @@ router.post('/verify-otp', verifyOtp);
 // router.put('/users/:id', updateUser);
 // router.delete('/users/:id',  deleteUser);
 // router.post('/verify-otp', verifyOtp);
+// router.post('/verify-otp-registration', verifyOtpRegistration);
+
+
 module.exports = router;
