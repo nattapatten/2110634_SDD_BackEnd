@@ -22,11 +22,13 @@ const auth = require('./routes/auth');
 const assignment=require('./routes/assignments');
 const course=require('./routes/course');
 const student=require('./routes/student');
+const notification=require('./routes/notification');
 
 app.use('/api/v1/auth', auth);
 app.use('/api/v1/assignments',assignment);
 app.use('/api/v1/courses',course);
 app.use('/api/v1/student',student);
+app.use('/api/v1/notifications',notification);
 
 
 const PORT = process.env.PORT || 5000;
