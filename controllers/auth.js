@@ -288,3 +288,24 @@ exports.loginStudent= async (req,res,next)=>{
     sendTokenResponse(user,200,res);
 
 }
+
+// Logout
+exports.logout = async (req, res, next) => {
+   res.cookie('token','none',{
+    expires: new Date(Date.now()+10*1000),
+    httpOnly :true
+   });
+try{
+   res.status(200).json({
+    success:true,
+    msg: "Logout successfully",
+    data:{}
+   });
+}catch(err){
+    res.status(500).json({ success: false, message: 'Server error' });
+}
+};
+
+
+
+

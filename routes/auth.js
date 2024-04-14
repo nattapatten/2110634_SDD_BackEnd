@@ -1,5 +1,7 @@
 const express = require('express');
-const {register, login, getMe, getUsers, updateUser, deleteUser, verifyOtp,verifyOtpRegistration , loginStudent} = require('../controllers/auth');
+
+const {register, login, getMe, getUsers, updateUser, deleteUser, verifyOtp,verifyOtpRegistration , loginStudent , logout} = require('../controllers/auth');
+
 
 
 const router = express.Router();
@@ -25,6 +27,9 @@ router.put('/users/:id', protect, authorize('admin'), updateUser);
 router.delete('/users/:id', protect, authorize('admin'), deleteUser);
 router.post('/verify-otp', verifyOtp);
 router.post('/verify-otp-registration', verifyOtpRegistration);
+router.get('/logout',logout);
+
+
 
 
 module.exports = router;
