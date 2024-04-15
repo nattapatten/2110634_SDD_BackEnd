@@ -1,7 +1,34 @@
 const { authorize } = require('../middleware/auth');
 const Course = require('../models/Course');
 
+//@desc		Get single course
+//@route	GET /api/v1/courses
+//@access	Public
+exports.getCoursebyCourseID = async (req, res, next) => {
+    console.log("getCoursebyCourseID");
+    // const course = await Course.find({ courseID: req.body.courseID });
+    // console.log(course);
+	try {
+		const course = await Course.find({ courseID: req.body.courseID });
+		if (!course) {
+			return res.status(404).json({ success: false, message: `No course with the id of ${req.params.id}`});
+		}
+		res.status(200).json({
+			success: true,
+			data: course
+		});
+	} catch (error) {
+		console.log(error);
+		return res.status(500).json({ success: false, message: "Cannot find course" });
+	}
+};
+
+//@desc		Get single course
+//@route	GET /api/v1/courses
+//@access	Public
 exports.getCourses = async (req, res, next) => {
+    console.log("getCourses");
+
     let query;
 
     //Copy req.query
@@ -20,7 +47,7 @@ exports.getCourses = async (req, res, next) => {
     queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match=>`$${match}`);
 
     //finding resource
-    query = Course.find(JSON.parse(queryStr)).populate('assignment');
+    query = Course.find(JSON.parse(queryStr));
 
     //Select Fields
     if (req.query.select) {
@@ -32,7 +59,7 @@ exports.getCourses = async (req, res, next) => {
         const sortBy = req.query.sort.split(',').join(' ');
         query = query.sort(sortBy);
     } else {
-        query = query.sort('dueDate');
+        query = query.sort('courseID');
     }
 
     //Pagination
@@ -71,63 +98,71 @@ exports.getCourses = async (req, res, next) => {
 
 };
 
-//@desc     Get single hospitals
-//@route    GET /api/v1/hospitals/:id
-//@access   Public
-exports.getCourse = async (req, res, next) => {
-    try {
-        const course = await Course.findById(req.params.id);
-
-        if (!course) {
-            return res.status(400).json({ success: false })
-        }
-        res.status(200).json({ success: true, data: course });
-    } catch (err) {
-        res.status(400).json({ success: false });
-    }
-};
-
-//@desc     Create new hospitals
-//@route    POST /api/v1/hospitals
-//@access   Private
+//@desc		create course
+//@route	POST /api/v1/course
+//@access	Private
 exports.createCourse = async (req, res, next) => {
-    const course = await Course.create(req.body);
-    res.status(201).json({ success: true, data: course });
+	console.log("createCourse")
+	try {
+		const course = await Course.create(req.body);
+		res.status(201).json({ success: true, data: course });
+	} catch (err) {
+		res.status(400).json({ success: false });
+		console.log(err.stack);
+	}
 };
 
-//@desc     Update new Course 
-//@route    PUT /api/v1/Course/:id
-//@access   Private
+//@desc		Update courses
+//@route	PUT /api/v1/courses/
+//@access	Private
 exports.updateCourse = async (req, res, next) => {
-    try {
-        const course = await Course.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true
-        });
-
-        if (!course) {
-            return res.status(400).json({ success: false });
-        }
-
-        res.status(200).json({ success: true, data: course });
-    } catch (err) {
-        res.status(400).json({ success: false });
-    }
+	console.log("updateCourse")
+	try {
+		const course = await Course.findOneAndUpdate({courseID: req.body.courseID}, req.body, {
+			new: true,
+			runValidators: true
+		});
+		if (!course) {
+			return res.status(404).json({
+				success: false,
+				msg: 'course not found'
+			});
+		}
+		res.status(200).json({
+			success: true,
+			data: course
+		});
+	} catch (error) {
+		console.log(error);
+		return res.status(500).json({
+			success: false,
+			message: "Cannot update Course"
+		});
+	}
 };
 
-//@desc     Delete hospitals
-//@route    DELETE /api/v1/hospitals/:id
-//@access   Private
+// Delete user
+// route DELETE /api/v1/course
+// access Private/Admin
 exports.deleteCourse = async (req, res, next) => {
-    try {
-        const course = await Course.findById(req.params.id);
-       
-        if (!course) {
-            return res.status(400).json({ success: false });
-        }
-        await course.deleteOne();
-        res.status(200).json({ success: true, data: {} });
-    } catch (err) {
-        res.status(400).json({ success: false });
-    }
+	console.log("delete Course")
+	console.log({ courseID: req.body.courseID })
+	try {
+		const course = await Course.deleteOne({ courseID: req.body.courseID });
+		if (!course) {
+			return res.status(404).json({
+				success: false,
+				msg: 'course not found'
+			});
+		}
+		res.status(200).json({
+			success: true,
+			data: {}
+		});
+	} catch (err) {
+		res.status(400).json({
+			success: false,
+			msg: err.message
+		});
+	}
 };
