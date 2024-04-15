@@ -193,3 +193,14 @@ exports.deleteAssignment = async (req, res, next) => {
 		});
 	}
 };
+
+//get all assignments
+exports.getAssignments = async (req, res, next) => {
+    const assignments = await Assignment.find();
+    res.status(200).json(
+        {
+            success: true,
+            data: assignments
+        }
+    )
+};

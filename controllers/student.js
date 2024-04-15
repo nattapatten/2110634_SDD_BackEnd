@@ -45,7 +45,7 @@ exports.getStudentbyID = async (req, res, next) => {
 	}
 };
 
-//@desc		Get student detail by advisorID
+//@desc		Get students detail by advisorID
 //@route	GET /api/v1/student/
 //@access	private
 exports.getStudentsByAdvisorID = async (req, res, next) => {
@@ -99,6 +99,7 @@ exports.createStudent = async (req, res, next) => {
     }
 };
 
+//get all students
 exports.getStudents = async (req, res, next) => {
     const student = await Student.find();
     res.status(200).json(
