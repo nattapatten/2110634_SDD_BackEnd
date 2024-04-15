@@ -45,6 +45,24 @@ exports.getStudentbyID = async (req, res, next) => {
 	}
 };
 
+//@desc		Get student detail by advisorID
+//@route	GET /api/v1/student/
+//@access	private
+exports.getStudentsByAdvisorID = async (req, res, next) => {
+	let query = await Student.find({advisorID:req.body.advisorID});
+	// console.log("query StudentbyID")
+	try {
+		const student = await query;
+		res.status(200).json({
+			success: true,
+			data: student
+		});
+	} catch (error) {
+		console.log(error);
+		return res.status(500).json({ success: false, message: "Cannot find student" });
+	}
+};
+
 //@desc     Create new student
 //@route    POST /api/v1/student
 //@access   Private
