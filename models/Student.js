@@ -40,6 +40,10 @@ const StudentSchema=new mongoose.Schema({
         enum : ['user','admin','publisher','student','teacher','commitee'],
         default : 'student'
     },
+    advisorID: {
+        type: String,
+        required: [true, 'Please add an advisorID'],
+    },
 	path: {
 		type:String,
 		required:true

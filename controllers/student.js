@@ -51,7 +51,7 @@ exports.getStudentbyID = async (req, res, next) => {
 exports.createStudent = async (req, res, next) => {
     console.log("createStudent")
     try{
-        const {title,studentID, name, email, password,phone,role,path,status,gpa } = req.body;
+        const {title,studentID, name, email, password,phone,role,advisorID,path,status,gpa } = req.body;
         const student = await Student.create({
             title,  
             studentID,
@@ -60,6 +60,7 @@ exports.createStudent = async (req, res, next) => {
             password,
             phone,
             role,
+            advisorID,
             path,
             status,
             gpa
@@ -67,7 +68,12 @@ exports.createStudent = async (req, res, next) => {
         //Create token
         // const token = student.getSignedJwtToken();
         // res.status(200).json({success: true, token});
-        sendTokenResponse(student, 200, res);
+        res.status(200).json(
+            {
+                success: true,
+                data: student
+            }
+        )
 
     } catch(err){
         res.status(400).json({success: false});
@@ -77,25 +83,25 @@ exports.createStudent = async (req, res, next) => {
 
 
 //Get token from model, create cookie and send response
-const sendTokenResponse = (user, statusCode, res) => {
-    //Create token
+// const sendTokenResponse = (user, statusCode, res) => {
+//     //Create token
 	
-    const token = user.getSignedJwtToken();
+//     const token = user.getSignedJwtToken();
 
-    const options = {
-        expires: new Date(Date.now()+process.env.JWT_COOKIE_EXPIRE*24*60*60*1000),
-        httpOnly: true
-    };
+//     const options = {
+//         expires: new Date(Date.now()+process.env.JWT_COOKIE_EXPIRE*24*60*60*1000),
+//         httpOnly: true
+//     };
 
-    if(process.env.NODE_ENV === 'production'){
-        options.secure = true;
-    } 
+//     if(process.env.NODE_ENV === 'production'){
+//         options.secure = true;
+//     } 
 
-    res.status(statusCode).cookie('token', token, options).json({
-        success: true,
-        token
-    })
-}
+//     res.status(statusCode).cookie('token', token, options).json({
+//         success: true,
+//         token
+//     })
+// }
 
 
 //@desc		Update student
