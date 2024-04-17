@@ -4,7 +4,11 @@ const nodemailer = require('nodemailer');
 
 exports.register = async (req, res, next) => {
     try{
-        const {studentID, name, email, password, phone, role} = req.body;
+        const {studentID, name, email, password, phone, role } = req.body;
+        
+        // Generate OTP
+        const otp = Math.floor(1000 + Math.random() * 9000).toString(); // 4 digits OTP
+        const otpExpire = new Date(Date.now() + 10 * 60 * 1000); // OTP expires in 10 minutes
 
         //create user
         const user = await User.create({
@@ -13,21 +17,63 @@ exports.register = async (req, res, next) => {
             email,
             password,
             phone,
-            role
+            role,
+            otp,
+            otpExpire
         });
 
-        //Create token
-        // const token = user.getSignedJwtToken();
-        // res.status(200).json({success: true, token});
-        sendTokenResponse(user, 200, res);
+        // Send OTP via email
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'chuladashboard@gmail.com',
+                pass: 'qguk esii abjv ykbl'
+            }
+        });
+          
+        const mailOptions = {
+            from: 'chuladashboard@gmail.com',
+            to: user.email,
+            subject: 'Your OTP for registration',
+            text: `Your OTP is: ${otp}. It is valid for 10 minutes.`
+        };
+
+        transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+                return next(error);
+            } else {
+                console.log('OTP Email sent: ' + info.response);
+                res.status(200).json({ success: true, message: 'OTP sent to your email. Please verify to complete registration.' });
+            }
+        });
 
     } catch(err){
         res.status(400).json({success: false});
         console.log(err.stack);
     }
-
-    
+ 
 }
+
+//Verify OTP at registration step
+exports.verifyOtpRegistration = async (req, res, next) => {
+    const { email, otp } = req.body;
+
+    const user = await User.findOne({ email, otp, otpExpire: { $gt: Date.now() } });
+
+    if (!user) {
+        // If OTP is invalid or expired
+        return res.status(400).json({ success: false, message: 'Invalid or expired OTP. Please register again.' });
+    }
+
+    // OTP is valid, nullify OTP fields to prevent reuse
+    user.otp = null;
+    user.otpExpire = null;
+
+    // await user.save();
+
+    res.status(200).json({ success: true, message: 'OTP verified. Registration complete.' });
+};
+
 //Login OTP
 // In controllers/auth.js
 exports.login = async (req, res, next) => {
@@ -206,4 +252,3 @@ exports.deleteUser = async (req, res, next) => {
         });
     }
 };
-

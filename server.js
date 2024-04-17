@@ -19,8 +19,10 @@ app.use(cookieParser());
 
 
 const auth = require('./routes/auth');
+const selectPath = require('./routes/selectPath');
 
 app.use('/api/v1/auth', auth);
+app.use('/api/v1/selectPath', selectPath);
 
 const PORT = process.env.PORT || 4000;
 const server = app.listen(PORT, console.log('Server running in', process.env.NODE_ENV, ' mode on port ', PORT));
