@@ -166,3 +166,21 @@ exports.deleteCourse = async (req, res, next) => {
 		});
 	}
 };
+
+//@desc		Get courses detail by advisorID
+//@route	GET /api/v1/student/
+//@access	private
+exports.getCoursesByAdvisorID = async (req, res, next) => {
+	let query = await Course.find({advisorID:req.body.advisorID});
+	// console.log("query StudentbyID")
+	try {
+		const courses = await query;
+		res.status(200).json({
+			success: true,
+			data: courses
+		});
+	} catch (error) {
+		console.log(error);
+		return res.status(500).json({ success: false, message: "Cannot find courses" });
+	}
+};

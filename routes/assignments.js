@@ -1,5 +1,5 @@
 const express = require('express');
-const { getAssignment,getAssignmentbyCourseID,getAssignmentbyUserID,createAssignment,updateAssignment, deleteAssignment} = require('../controllers/assignment');
+const { getAssignment,getAssignmentbyCourseID,getAssignmentbyUserID,createAssignment,updateAssignment, deleteAssignment, getAssignments} = require('../controllers/assignment');
 
 const router = express.Router({mergeParams:true});
 const {protect,protect2, authorize} = require('../middleware/auth');
@@ -10,6 +10,7 @@ router.route('/getByUserID').get(getAssignmentbyUserID);
 router.route('/getByUserIDandCourseID').get(getAssignment);
 router.route('/').put(protect2, updateAssignment);
 router.delete('/',protect,deleteAssignment);
+router.route('/').get(getAssignments);
 
 // router.get('/me',protect2, getStudent);
 // router.get('/', getStudent,getStudentbyID);
