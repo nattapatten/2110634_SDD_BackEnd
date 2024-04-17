@@ -19,7 +19,7 @@ const CourseSchema = new mongoose.Schema({
     currentStudents:{
         type:String,
         required : [true,'Please add a currentStudents.'],
-    },
+    }
 });
 
 

@@ -3,6 +3,7 @@ const Assignment = require('../models/Assignment');
 const Course = require('../models/Course');
 const User = require('../models/User')
 const Student = require('../models/Student')
+const Advisor = require('../models/Advisor')
 
 
 //@desc		Get current student
@@ -49,19 +50,35 @@ exports.getStudentbyID = async (req, res, next) => {
 //@route	GET /api/v1/student/
 //@access	private
 exports.getStudentsByAdvisorID = async (req, res, next) => {
-	let query = await Student.find({advisorID:req.body.advisorID});
-	// console.log("query StudentbyID")
-	try {
-		const student = await query;
-		res.status(200).json({
-			success: true,
-			data: student
-		});
-	} catch (error) {
-		console.log(error);
-		return res.status(500).json({ success: false, message: "Cannot find student" });
-	}
+    const advisorID = req.params.advisorID; // Assuming advisorID is passed as a URL parameter
+
+    try {
+        // Fetch the advisor to get the list of student IDs
+        const advisor = await Advisor.findOne({ advisorID: advisorID });
+        if (!advisor) {
+            return res.status(404).json({ success: false, message: "Advisor not found" });
+        }
+
+        // Fetch the students using the list of student IDs
+        const students = await Student.find({
+            studentID: { $in: advisor.students } // Using $in to find all students whose IDs are listed in the advisor document
+        });
+
+        if (students.length === 0) {
+            return res.status(404).json({ success: false, message: "No students found for this advisor" });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: students
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Server error while retrieving students" });
+    }
 };
+
+
 
 //@desc     Create new student
 //@route    POST /api/v1/student

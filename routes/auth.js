@@ -21,10 +21,10 @@ const { protect, authorize } = require('../middleware/auth');
 // Use this without Protect and authorize
 router.post('/register', register);
 router.post('/login', login).post('/loginStudent',loginStudent);
-router.get('/me', protect, getMe);
-router.get('/users', protect, authorize('admin'), getUsers);
-router.put('/users/:id', protect, authorize('admin'), updateUser);
-router.delete('/users/:id', protect, authorize('admin'), deleteUser);
+router.get('/me',  getMe);
+router.get('/users', getUsers);
+router.put('/users/:id', updateUser);
+router.delete('/users/:id', deleteUser);
 router.post('/verify-otp', verifyOtp);
 router.post('/verify-otp-registration', verifyOtpRegistration);
 router.get('/logout',logout);

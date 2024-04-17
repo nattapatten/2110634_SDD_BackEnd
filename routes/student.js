@@ -6,7 +6,7 @@ const {protect,protect2, authorize} = require('../middleware/auth');
 
 
 router.get('/me',protect2, getStudent);
-router.get('/',getStudentbyID).get('/students',getStudents).get('/studentsByAdvisor', getStudentsByAdvisorID);
+router.get('/',getStudentbyID).get('/students',getStudents).get('/:advisorID', getStudentsByAdvisorID);
 router.post('/', createStudent);
 router.put('/',protect,updateStudent);
 router.delete('/',protect,deleteStudent);
