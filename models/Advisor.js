@@ -16,6 +16,10 @@ const AdvisorSchema=new mongoose.Schema({
 	students: [{
         type: String,
         required: false
+    }],
+    courses: [{
+        type: String,
+        required: false
     }]
 });
 
