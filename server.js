@@ -16,7 +16,7 @@ app.use(cookieParser());
 
 const auth = require("./routes/auth");
 const selectPath = require("./routes/selectPath");
-const companies = require("./routes/courses");
+const courses = require("./routes/courses");
 
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/selectPath", selectPath);

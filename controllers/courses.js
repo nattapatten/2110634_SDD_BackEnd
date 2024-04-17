@@ -2,14 +2,13 @@ const Course = require("../models/Course");
 
 exports.register = async (req, res, next) => {
   try {
-    const { courseName, courseDetails, semester, year, advisorID } = req.body;
+    const { courseID, courseName, maxStudents, currentStudents } = req.body;
 
     const course = await Course.create({
+      courseID,
       courseName,
-      courseDetails,
-      semester,
-      year,
-      advisorID,
+      maxStudents,
+      currentStudents,
     });
   } catch (err) {
     res.status(400).json({ success: false });

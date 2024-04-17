@@ -5,6 +5,7 @@ const {
   createCourse,
   updateCourse,
   deleteCourse,
+  getCoursesByAdvisor,
 } = require("../controllers/courses");
 
 const router = express.Router();

@@ -1,25 +1,21 @@
 const mongoose = require("mongoose");
 
 const CourseSchema = new mongoose.Schema({
+  courseID: {
+    type: String,
+    required: [true, "please add a course ID"],
+  },
   courseName: {
     type: String,
     required: [true, "please add a course name"],
   },
-  courseDetails: {
+  maxStudents: {
     type: String,
-    required: [true, "Please add a course details"],
+    required: [true, "Please add a maxStudents"],
   },
-  semester: {
+  currentStudents: {
     type: String,
-    required: false,
-  },
-  year: {
-    type: String,
-    required: false,
-  },
-  advisorID: {
-    type: String,
-    required: false,
+    required: [true, "Please add a currentStudents"],
   },
 });
 
