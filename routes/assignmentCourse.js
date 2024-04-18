@@ -4,7 +4,7 @@ const { createAssignment, getAssignmentCourses, deleteAssignmentCourse, updateAs
 const router = express.Router();
 
 // Route to create a new assignment
-router.post('/', createAssignment).put('/:id', updateAssignmentCourse).delete('/:id', deleteAssignmentCourse).get('/:id', getAssignmentsByAdvisorID);
+router.post('/', createAssignment).put('/:id', updateAssignmentCourse).delete('/:id', deleteAssignmentCourse).get('/getByAdvisor/:id', getAssignmentsByAdvisorID);
 router.get('/assignmentCourses',getAssignmentCourses)
 
 module.exports = router;
