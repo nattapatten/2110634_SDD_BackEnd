@@ -46,35 +46,50 @@ exports.getStudentbyID = async (req, res, next) => {
 	}
 };
 
-//@desc		Get students detail by advisorID
-//@route	GET /api/v1/student/
-//@access	private
-exports.getStudentsByAdvisorID = async (req, res, next) => {
-    const advisorID = req.params.advisorID; // Assuming advisorID is passed as a URL parameter
 
+
+
+exports.getStudentsByAdvisorID = async (req, res, next) => {
     try {
-        // Fetch the advisor to get the list of student IDs
+        const advisorID = req.params.advisorID; // Get advisorID from URL parameters
+
+        // Find the advisor by ID
         const advisor = await Advisor.findOne({ advisorID: advisorID });
         if (!advisor) {
-            return res.status(404).json({ success: false, message: "Advisor not found" });
+            return res.status(404).json({ message: "Advisor not found" });
         }
 
-        // Fetch the students using the list of student IDs
-        const students = await Student.find({
-            studentID: { $in: advisor.students } // Using $in to find all students whose IDs are listed in the advisor document
-        });
+        // Get student IDs from the advisor document
+        const studentIDs = advisor.students;
 
-        if (students.length === 0) {
-            return res.status(404).json({ success: false, message: "No students found for this advisor" });
-        }
+        // Perform an aggregation to join Student data with User data
+        const students = await Student.aggregate([
+            { $match: { studentID: { $in: studentIDs } } }, // Match student records from the advisor's list
+            {
+                $lookup: {
+                    from: "users", // This should match the MongoDB collection name for users
+                    localField: "studentID", // Field from Student model
+                    foreignField: "studentID", // Field from User model
+                    as: "userData" // Array containing joined User documents
+                }
+            },
+            { $unwind: "$userData" }, // Unwind the array to make processing easier
+            { $project: {
+                studentID: 1,
+                name: "$userData.name",
+                email: "$userData.email",
+                phone: "$userData.phone",
+                path: "$pathName",
+                status: 1,
+                title: 1,
+                gpa: 1
+            }} // Select only required fields and rename pathName to path
+        ]);
 
-        res.status(200).json({
-            success: true,
-            data: students
-        });
+        // Return the list of students with detailed information
+        res.status(200).json(students);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: "Server error while retrieving students" });
+        next(error); // Handle errors and pass to error-handling middleware
     }
 };
 
@@ -86,19 +101,9 @@ exports.getStudentsByAdvisorID = async (req, res, next) => {
 exports.createStudent = async (req, res, next) => {
     console.log("createStudent")
     try{
-        const {title,studentID, name, email, password,phone,role,advisorID,path,status,gpa } = req.body;
+        const {title,studentID, pathName,status,gpa } = req.body;
         const student = await Student.create({
-            title,  
-            studentID,
-            name,
-            email,
-            password,
-            phone,
-            role,
-            advisorID,
-            path,
-            status,
-            gpa
+            title,studentID, pathName,status,gpa
         });
         //Create token
         // const token = student.getSignedJwtToken();
@@ -201,3 +206,13 @@ exports.deleteStudent = async (req, res, next) => {
         });
     }
 };
+
+// get student by advisorID
+// title: "Graduated",
+    //         image: StudentProfile,
+    //         path: "Software Engineer",
+    //         name: "James James",
+    //         studentID: "11111111",
+    //         status: "100",
+    //         gpa: "3.80",
+    //         lastUpdated: "2023-12-15T08:30:00",
