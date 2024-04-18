@@ -11,6 +11,7 @@ exports.register = async (req, res, next) => {
         const otp = Math.floor(1000 + Math.random() * 9000).toString(); // 4 digits OTP
         const otpExpire = new Date(Date.now() + 10 * 60 * 1000); // OTP expires in 10 minutes
 
+
         //create user
         const user = await User.create({
             studentID,
@@ -23,6 +24,16 @@ exports.register = async (req, res, next) => {
             otpExpire
         });
 
+
+
+        transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+                return next(error);
+            } else {
+                console.log('OTP Email sent: ' + info.response);
+                res.status(200).json({ success: true, message: 'OTP sent to your email. Please verify to complete registration.' });
+            }
+        });
         // Send OTP via email
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -54,6 +65,8 @@ exports.register = async (req, res, next) => {
     }
  
 }
+
+
 
 //Verify OTP at registration step
 exports.verifyOtpRegistration = async (req, res, next) => {
