@@ -92,13 +92,44 @@ exports.deleteAssignmentCourse = async (req, res, next) => {
 const Advisor = require('../models/Advisor'); // Import Advisor model
 // const AssignmentCourse = require('../models/AssignmentCourse'); // Import AssignmentCourse model
 
-exports.getAssignmentsByAdvisorID = async (req, res, next) => {
+// exports.getAssignmentsByAdvisorID = async (req, res, next) => {
     
+//     try {
+//         // Extract advisorID from the request parameters
+//         const advisorID = req.params.id;
+//         // console.log(req.params.id)
+//         // console.log(advisorID)
+
+//         // Find the advisor by advisorID
+//         const advisor = await Advisor.findOne({ advisorID: advisorID });
+//         if (!advisor) {
+//             return res.status(404).json({
+//                 success: false,
+//                 message: 'Advisor not found'
+//             });
+//         }
+
+//         // Extract the list of courseIDs from the advisor document
+//         const { courses } = advisor;
+
+//         // Find all AssignmentCourses that match the courseIDs from the advisor's courses list
+//         const assignments = await AssignmentCourse.find({ courseID: { $in: courses } });
+
+//         // Return the found assignments
+//         res.status(200).json({
+//             success: true,
+//             data: assignments
+//         });
+//     } catch (error) {
+//         // Pass any errors to the next middleware
+//         next(error);
+//     }
+// };
+
+exports.getAssignmentsByAdvisorID = async (req, res, next) => {
     try {
         // Extract advisorID from the request parameters
-        const advisorID = req.params.id;
-        // console.log(req.params.id)
-        // console.log(advisorID)
+        const advisorID = req.params.id;  // Ensure parameter name matches your route setup
 
         // Find the advisor by advisorID
         const advisor = await Advisor.findOne({ advisorID: advisorID });
@@ -115,12 +146,23 @@ exports.getAssignmentsByAdvisorID = async (req, res, next) => {
         // Find all AssignmentCourses that match the courseIDs from the advisor's courses list
         const assignments = await AssignmentCourse.find({ courseID: { $in: courses } });
 
+        // Check if assignments are found
+        if (!assignments || assignments.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'No assignments found for the given advisor'
+            });
+        }
+
         // Return the found assignments
         res.status(200).json({
             success: true,
             data: assignments
         });
     } catch (error) {
+        // Log the error for debugging purposes
+        console.error('Error fetching assignments by advisor ID:', error);
+
         // Pass any errors to the next middleware
         next(error);
     }
