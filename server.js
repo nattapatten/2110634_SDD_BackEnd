@@ -23,6 +23,7 @@ const student=require('./routes/student');
 const notification=require('./routes/notification');
 const advisor = require('./routes/advisor');
 const AssignmentCourse = require('./routes/assignmentCourse');
+const selectPath = require('./routes/selectPath');
 
 app.use('/api/v1/auth', auth);
 app.use('/api/v1/assignments',assignment);
