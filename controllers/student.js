@@ -10,7 +10,7 @@ const Advisor = require('../models/Advisor')
 //@route	GET /api/v1/student/me
 //@access	private
 exports.getStudent = async (req, res, next) => {
-    console.log("getStudent")
+    // console.log("getStudent")
 	// console.log(req.user)
 	let query = await Student.findById(req.user.id);
 	// console.log("query Student")
@@ -30,8 +30,8 @@ exports.getStudent = async (req, res, next) => {
 //@route	GET /api/v1/student/
 //@access	private
 exports.getStudentbyID = async (req, res, next) => {
-    console.log("getStudentbyID")
-	console.log({studentID:req.body.studentID})
+    // console.log("getStudentbyID")
+	// console.log({studentID:req.body.studentID})
 	let query = await Student.find({studentID:req.body.studentID});
 	// console.log("query StudentbyID")
 	try {
@@ -47,16 +47,14 @@ exports.getStudentbyID = async (req, res, next) => {
 };
 
 
-
-
 exports.getStudentsByAdvisorID = async (req, res, next) => {
     try {
-        const advisorID = req.params.advisorID; // Get advisorID from URL parameters
+        const advisorID = req.params.advisorID;
 
         // Find the advisor by ID
         const advisor = await Advisor.findOne({ advisorID: advisorID });
         if (!advisor) {
-            return res.status(404).json({ message: "Advisor not found" });
+            return res.status(404).json({ success: false, message: "Advisor not found" });
         }
 
         // Get student IDs from the advisor document
@@ -64,7 +62,7 @@ exports.getStudentsByAdvisorID = async (req, res, next) => {
 
         // Perform an aggregation to join Student data with User data
         const students = await Student.aggregate([
-            { $match: { studentID: { $in: studentIDs } } }, // Match student records from the advisor's list
+            { $match: { studentID: { $in: studentIDs } } }, // Match student records
             {
                 $lookup: {
                     from: "users", // This should match the MongoDB collection name for users
@@ -87,19 +85,20 @@ exports.getStudentsByAdvisorID = async (req, res, next) => {
         ]);
 
         // Return the list of students with detailed information
-        res.status(200).json(students);
+        res.status(200).json({
+            success: true,
+            data: students
+        });
     } catch (error) {
         next(error); // Handle errors and pass to error-handling middleware
+        return res.status(500).json({ success: false, message: "An error occurred", error: error.message });
     }
 };
 
 
 
-//@desc     Create new student
-//@route    POST /api/v1/student
-//@access   Private
 exports.createStudent = async (req, res, next) => {
-    console.log("createStudent")
+    // console.log("createStudent")
     try{
         const {title,studentID, pathName,status,gpa } = req.body;
         const student = await Student.create({
