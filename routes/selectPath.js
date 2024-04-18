@@ -1,17 +1,17 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const selectPathController = require('../controllers/selectPath');
+const SelectPath = require("../controllers/selectPath");
 
 // Create a new selectPath
-router.post('/selectPaths', selectPathController.createSelectPath);
+router.post("/selectPaths", SelectPath.createSelectPath);
 
 // Get all selectPaths
-router.get('/selectPaths', selectPathController.getAllSelectPaths);
+router.get("/selectPaths", SelectPath.getAllSelectPaths);
 
 // Delete a selectPath
-router.delete('/selectPaths/:id', selectPathController.deleteSelectPath);
+router.delete("/selectPaths/:id", SelectPath.deleteSelectPath);
 
 // Update a selectPath
-router.put('/selectPaths/:id', selectPathController.updateSelectPath);
+router.put("/selectPaths/:id", SelectPath.updateSelectPath);
 
 module.exports = router;
