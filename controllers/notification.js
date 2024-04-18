@@ -1,4 +1,5 @@
 const Notification = require("../models/Notification");
+const Advisor = require('../models/Advisor');
 
 exports.getNotifications = async (req, res, next) => {
     let query;
@@ -126,3 +127,53 @@ exports.deleteNotification = async (req, res, next) => {
 };
 
 //This Version Can Connect to MongoDB
+
+exports.getNotificationsByAdvisorID = async (req, res, next) => {
+    try {
+        // Extract advisorID from the request parameters
+        const { advisorID } = req.params;
+
+        // Find the advisor by advisorID
+        const advisor = await Advisor.findOne({ advisorID: advisorID });
+        if (!advisor) {
+            return res.status(404).json({
+                success: false,
+                message: 'Advisor not found'
+            });
+        }
+
+        // Extract the list of courseIDs from the advisor document
+        const { courses } = advisor;
+
+        // Check if courses array exists and is not empty
+        if (!courses || courses.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'No courses found for this advisor'
+            });
+        }
+
+        // Find all Notifications that match the courseIDs from the advisor's courses list
+        const notifications = await Notification.find({ courseID: { $in: courses } }).sort('-createdAt');
+
+        // Check if notifications are found
+        if (!notifications || notifications.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'No notifications found for the given courses'
+            });
+        }
+
+        // Return the found notifications
+        res.status(200).json({
+            success: true,
+            data: notifications
+        });
+    } catch (error) {
+        console.error('Error fetching notifications by advisor ID:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error'
+        });
+    }
+};
