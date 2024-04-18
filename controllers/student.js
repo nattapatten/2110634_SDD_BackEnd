@@ -57,10 +57,15 @@ exports.getStudentsByAdvisorID = async (req, res, next) => {
             return res.status(404).json({ success: false, message: "Advisor not found" });
         }
 
+        // Check if advisor has associated students
+        if (!advisor.students || advisor.students.length === 0) {
+            return res.status(404).json({ success: false, message: "No students found for this advisor" });
+        }
+
         // Get student IDs from the advisor document
         const studentIDs = advisor.students;
 
-        // Perform an aggregation to join Student data with User data
+        // Perform an aggregation to join Student data with User data and include course details
         const students = await Student.aggregate([
             { $match: { studentID: { $in: studentIDs } } }, // Match student records
             {
@@ -71,52 +76,73 @@ exports.getStudentsByAdvisorID = async (req, res, next) => {
                     as: "userData" // Array containing joined User documents
                 }
             },
-            { $unwind: "$userData" }, // Unwind the array to make processing easier
-            { $project: {
-                studentID: 1,
+            { $unwind: { path: "$userData", preserveNullAndEmptyArrays: true } }, // Unwind the array, handling missing userData gracefully
+            { $addFields: {
                 name: "$userData.name",
                 email: "$userData.email",
-                phone: "$userData.phone",
-                path: "$pathName",
+                phone: "$userData.phone"
+            }},
+            { $project: {
+                _id: 1, // Include MongoDB's default _id field
+                studentID: 1,
+                name: 1,
+                email: 1,
+                phone: 1,
+                pathName: 1,
                 status: 1,
                 title: 1,
-                gpa: 1
-            }} // Select only required fields and rename pathName to path
+                gpa: 1,
+                courses: 1, // Include the whole courses array with all details
+                registDate: 1,
+                lastUpdated: 1
+            }} // Select all required fields
         ]);
 
-        // Return the list of students with detailed information
+        // Return the list of students with detailed information including course data
         res.status(200).json({
             success: true,
             data: students
         });
     } catch (error) {
-        next(error); // Handle errors and pass to error-handling middleware
-        return res.status(500).json({ success: false, message: "An error occurred", error: error.message });
+        console.error("Failed to retrieve students by advisor ID:", error);
+        next(error); // Pass the error to the next middleware
     }
 };
 
 
 
 exports.createStudent = async (req, res, next) => {
-    // console.log("createStudent")
-    try{
-        const {title,studentID, pathName,status,gpa } = req.body;
-        const student = await Student.create({
-            title,studentID, pathName,status,gpa
-        });
-        //Create token
-        // const token = student.getSignedJwtToken();
-        // res.status(200).json({success: true, token});
-        res.status(200).json(
-            {
-                success: true,
-                data: student
-            }
-        )
+    try {
+        // Destructure the body to get all relevant fields, including nested course data
+        const { title, studentID, pathName, status, gpa, courses } = req.body;
 
-    } catch(err){
-        res.status(400).json({success: false});
-        console.log(err.stack);
+        // Determine title based on status directly in the controller if needed
+        const computedTitle = status === '100' ? 'Graduated' : 'In Progress';
+
+        // Create the student in the database
+        const student = await Student.create({
+            title: computedTitle,  // Use computed title based on status or use the one provided by the request
+            studentID,
+            pathName,
+            status,
+            gpa,  // Consider computing or validating the GPA based on courses if necessary
+            courses,  // Ensure courses are included as part of the request
+            registDate: new Date(),  // You can set the registration date explicitly if you want to override the default
+            lastUpdated: new Date()  // Same for the last updated date
+        });
+
+        // Respond with success and the created student data
+        res.status(201).json({
+            success: true,
+            data: student
+        });
+    } catch (err) {
+        console.error(err);  // Log the error to the console for debugging
+        res.status(400).json({
+            success: false,
+            message: 'Failed to create student',
+            error: err.message
+        });
     }
 };
 

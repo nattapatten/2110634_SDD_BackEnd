@@ -6,6 +6,7 @@ const {
   updateCourse,
   deleteCourse,
   getCoursesByAdvisor,
+  getCoursesByStudentID
 } = require("../controllers/courses");
 
 const router = express.Router();
@@ -34,4 +35,5 @@ router.delete("/deleteCourse/:id", deleteCourse);
 // Access: Public
 router.get("/getCoursesByAdvisor/:advisorID", getCoursesByAdvisor);
 
+router.get('/getCourseByStudentID/:studentID', getCoursesByStudentID);
 module.exports = router;
