@@ -5,11 +5,11 @@ const router = express.Router({mergeParams:true});
 const {protect,protect2, authorize} = require('../middleware/auth');
 
 
-router.get('/me',protect2, getStudent);
+router.get('/me', getStudent);
 router.get('/',getStudentbyID).get('/students',getStudents).get('/:advisorID', getStudentsByAdvisorID);
 router.post('/', createStudent);
-router.put('/',protect,updateStudent);
-router.delete('/',protect,deleteStudent);
+router.put('/', updateStudent);
+router.delete('/',deleteStudent);
 
 
 
