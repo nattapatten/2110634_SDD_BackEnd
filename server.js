@@ -14,6 +14,7 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
+const auth = require("./routes/auth");
 
 
 const auth = require('./routes/auth');
@@ -27,19 +28,22 @@ const AssignmentCourse = require('./routes/assignmentCourse');
 const selectPath = require('./routes/selectPath');
 
 
-app.use('/api/v1/auth', auth);
-app.use('/api/v1/assignments',assignment);
+
+
+app.use("/api/v1/auth", auth);
+app.use("/api/v1/assignments", assignment);
 app.use("/api/v1/selectPath", selectPath);
-app.use('/api/v1/assignmentCourse',AssignmentCourse);
-// app.use('/api/v1/courses',course);
+app.use("/api/v1/assignmentCourse", AssignmentCourse);
 app.use("/api/v1/courses", courses);
-app.use('/api/v1/student',student);
-app.use('/api/v1/advisor', advisor)
-app.use('/api/v1/notifications',notification);
+app.use("/api/v1/student", student);
+app.use("/api/v1/advisor", advisor);
+app.use("/api/v1/notifications", notification);
 
-
-const PORT = process.env.PORT || 4000;
-const server = app.listen(PORT, console.log('Server running in', process.env.NODE_ENV, ' mode on port ', PORT));
+const PORT = process.env.PORT || 5000;
+const server = app.listen(
+  PORT,
+  console.log("Server running in", process.env.NODE_ENV, " mode on port ", PORT)
+);
 
 process.on("unhandledRejection", (err, promise) => {
   console.log(`Error: ${err.message}`);
