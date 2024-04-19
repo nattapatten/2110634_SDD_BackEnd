@@ -1,13 +1,20 @@
-const express = require('express');
+const express = require("express");
 
-const {register, login, getMe, getUsers, updateUser, deleteUser, verifyOtp,verifyOtpRegistration , loginStudent , logout} = require('../controllers/auth');
-
-
+const {
+  register,
+  login,
+  getMe,
+  getUsers,
+  updateUser,
+  deleteUser,
+  verifyOtp,
+  verifyOtpRegistration,
+  logout,
+} = require("../controllers/auth");
 
 const router = express.Router();
 
-const { protect, authorize } = require('../middleware/auth');
-
+const { protect, authorize } = require("../middleware/auth");
 
 // router.post('/register', register);
 // router.post('/login', login);
@@ -17,19 +24,15 @@ const { protect, authorize } = require('../middleware/auth');
 // router.delete('/users/:id', protect, authorize('admin'), deleteUser);
 // router.post('/verify-otp', verifyOtp);
 
-
 // Use this without Protect and authorize
-router.post('/register', register);
-router.post('/login', login).post('/loginStudent',loginStudent);
-router.get('/me',  getMe);
-router.get('/users', getUsers);
-router.put('/users/:id', updateUser);
-router.delete('/users/:id', deleteUser);
-router.post('/verify-otp', verifyOtp);
-router.post('/verify-otp-registration', verifyOtpRegistration);
-router.get('/logout',logout);
-
-
-
+router.post("/register", register);
+router.post("/login", login);
+router.get("/me", protect, authorize("admin", "user"), getMe);
+router.get("/users", getUsers);
+router.put("/users/:id", updateUser);
+router.delete("/users/:id", deleteUser);
+router.post("/verify-otp", verifyOtp);
+router.post("/verify-otp-registration", verifyOtpRegistration);
+router.get("/logout", logout);
 
 module.exports = router;
