@@ -17,7 +17,6 @@ app.use(cookieParser());
 const auth = require("./routes/auth");
 
 
-const auth = require('./routes/auth');
 const assignment=require('./routes/assignments');
 // const course=require('./routes/course');
 const courses = require("./routes/courses");
