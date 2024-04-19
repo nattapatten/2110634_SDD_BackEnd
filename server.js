@@ -15,19 +15,22 @@ app.use(express.json());
 app.use(cookieParser());
 
 const auth = require("./routes/auth");
-const selectPath = require("./routes/selectPath");
+
+const auth = require("./routes/auth");
 const assignment = require("./routes/assignments");
-const course = require("./routes/course");
+// const course=require('./routes/course');
+const courses = require("./routes/courses");
 const student = require("./routes/student");
 const notification = require("./routes/notification");
 const advisor = require("./routes/advisor");
 const AssignmentCourse = require("./routes/assignmentCourse");
+const selectPath = require("./routes/selectPath");
 
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/assignments", assignment);
 app.use("/api/v1/selectPath", selectPath);
 app.use("/api/v1/assignmentCourse", AssignmentCourse);
-app.use("/api/v1/courses", course);
+app.use("/api/v1/courses", courses);
 app.use("/api/v1/student", student);
 app.use("/api/v1/advisor", advisor);
 app.use("/api/v1/notifications", notification);
