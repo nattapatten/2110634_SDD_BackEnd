@@ -16,12 +16,9 @@ app.use(cookieParser());
 
 const auth = require("./routes/auth");
 
-<<<<<<< HEAD
 
-const assignment=require('./routes/assignments');
-=======
 const assignment = require("./routes/assignments");
->>>>>>> Siripat_Teem
+
 // const course=require('./routes/course');
 const courses = require("./routes/courses");
 const student = require("./routes/student");
