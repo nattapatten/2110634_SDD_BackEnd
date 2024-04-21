@@ -20,8 +20,20 @@ const StudentAssignmentSchema = new mongoose.Schema({
     assignmentCourse_ObjectID: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
+    },
+    score: {
+        type: Number, // Corrected type for score
+        default: 0
+    },
+    dueDate: {
+        type: Date,
+        default: null
+    },
+    submittedDate: {
+        type: Date,
+        default: null
+        // default: () => Date.now() // Use a function to ensure the current date/time
     }
-
 });
 
 module.exports = mongoose.model('StudentAssignment', StudentAssignmentSchema);

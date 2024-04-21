@@ -28,6 +28,7 @@ const AssignmentCourse = require("./routes/assignmentCourse");
 const selectPath = require("./routes/selectPath");
 const studentSelectPath = require("./routes/studentSelectPath");
 const studentDashboard = require('./routes/studentDashboard');
+const studentAssignment = require('./routes/studentAssignment');
 
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/assignments", assignment);
@@ -39,6 +40,7 @@ app.use("/api/v1/advisor", advisor);
 app.use("/api/v1/notifications", notification);
 app.use("/api/v1/studentSelectPath", studentSelectPath);
 app.use("/api/v1/studentDashboard", studentDashboard);
+app.use("/api/v1/studentAssignment", studentAssignment);
 
 
 
