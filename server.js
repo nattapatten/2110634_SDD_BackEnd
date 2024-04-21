@@ -26,6 +26,8 @@ const notification = require("./routes/notification");
 const advisor = require("./routes/advisor");
 const AssignmentCourse = require("./routes/assignmentCourse");
 const selectPath = require("./routes/selectPath");
+const studentSelectPath = require("./routes/studentSelectPath");
+const studentDashboard = require('./routes/studentDashboard');
 
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/assignments", assignment);
@@ -35,6 +37,10 @@ app.use("/api/v1/courses", courses);
 app.use("/api/v1/student", student);
 app.use("/api/v1/advisor", advisor);
 app.use("/api/v1/notifications", notification);
+app.use("/api/v1/studentSelectPath", studentSelectPath);
+app.use("/api/v1/studentDashboard", studentDashboard);
+
+
 
 const PORT = process.env.PORT || 5000;
 const server = app.listen(
