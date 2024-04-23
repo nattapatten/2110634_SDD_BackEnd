@@ -21,7 +21,7 @@ const CourseSchema = new mongoose.Schema({
     enrollStatus: {
         type: String,
         optional: true,
-        enum: ['0', '1', '2']
+        enum: ['0', '1', '2','3']
     }
 }, { _id: false }); // Prevent Mongoose from creating a default _id for subdocuments
 
