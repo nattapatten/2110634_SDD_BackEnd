@@ -24,7 +24,12 @@ const StudentSchema = new mongoose.Schema({
     courses: [{
         courseID: { type: String, required: false },
         courseStatus: { type: Number, required: false, min: 0, max: 100 },
-        courseGpa: { type: String, enum: ['A', 'B', 'C', 'D', 'F', null], required: false }
+        courseGpa: { type: String, enum: ['A', 'B', 'C', 'D', 'F', null], required: false },
+        enrollStatus: {
+            type: String,
+            required: false,
+            enum: ['0', '1', '2','3',null]}
+
     }],
     registDate: {
         type: Date,

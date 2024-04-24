@@ -1,4 +1,6 @@
 const StudentSelectPath = require("../models/StudentSelectPath"); // adjust the path as necessary to where your model is stored
+const Student = require("../models/Student"); // adjust the path as necessary to where your model is stored
+
 
 // POST handler for creating a new StudentSelectPath entry
 exports.createStudentSelectPath = async (req, res) => {
@@ -56,7 +58,7 @@ exports.enrollStudentCourse = async (req, res) => {
 
   try {
     // Find the student and update the specific course's enroll status
-    const updatedStudent = await StudentSelectPath.findOneAndUpdate(
+    const updatedStudent = await Student.findOneAndUpdate(
       { studentID: studentID, "courses.courseID": courseID },
       { $set: { "courses.$.enrollStatus": enrollStatus } },
       { new: true } // Return the updated document
