@@ -35,6 +35,10 @@ const StudentSelectPathSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    studentPath: {
+        type: String,
+        required: true
+    },
     courses: [CourseSchema]
 });
 
