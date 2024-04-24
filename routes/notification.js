@@ -1,5 +1,5 @@
 const express = require('express');
-const { getNotifications, getNotification, createNotification, getNotificationsByAdvisorID, updateNotification, deleteNotification } = require('../controllers/notification');
+const { getNotifications, getNotification, createNotification, getNotificationsByAdvisorID, updateNotification, deleteNotification , getNotificationsByStudentD } = require('../controllers/notification');
 const { protect, authorize } = require('../middleware/auth');
 
 
@@ -25,6 +25,8 @@ router.route('/:id')
     .delete(protectMiddleware, deleteNotification);
 
 router.get('/by-advisor/:advisorID', getNotificationsByAdvisorID);
+
+router.get('/by-student/:studentID', getNotificationsByStudentD);
 
 
 module.exports = router;

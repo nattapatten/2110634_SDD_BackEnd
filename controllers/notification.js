@@ -1,5 +1,6 @@
 const Notification = require("../models/Notification");
 const Advisor = require('../models/Advisor');
+const StudentSelectPath = require('../models/StudentSelectPath')
 
 exports.getNotifications = async (req, res, next) => {
     let query;
@@ -171,6 +172,70 @@ exports.getNotificationsByAdvisorID = async (req, res, next) => {
         });
     } catch (error) {
         console.error('Error fetching notifications by advisor ID:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Server error'
+        });
+    }
+};
+
+
+
+
+
+
+exports.getNotificationsByStudentD = async (req, res, next) => {
+    try {
+        // Extract studentID from the request parameters
+        const { studentID } = req.params;
+
+        console.log("studentID", studentID);
+
+        // Find the student path by studentID
+        const studentPath = await StudentSelectPath.findOne({ studentID: studentID });
+        if (!studentPath) {
+            return res.status(404).json({
+                success: false,
+                message: 'Student not found'
+            });
+        }
+
+        // Assuming courses is a property that contains an array of course objects
+        const courses = studentPath.courses;
+
+        console.log("studentPath.courses", courses);
+
+        // Extract courseIDs from the courses array
+        const courseIDs = courses.map(course => course.courseID);
+
+        console.log("Extracted courseIDs", courseIDs);
+
+        // Check if the courseIDs array exists and is not empty
+        if (!courseIDs || courseIDs.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'No courses found for this student'
+            });
+        }
+
+        // Find all Notifications that match the courseIDs from the student's courses list
+        const notifications = await Notification.find({ courseID: { $in: courseIDs } }).sort('-createdAt');
+
+        // Check if notifications are found
+        if (!notifications || notifications.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'No notifications found for the given courses'
+            });
+        }
+
+        // Return the found notifications
+        res.status(200).json({
+            success: true,
+            data: notifications
+        });
+    } catch (error) {
+        console.error('Error fetching notifications by student ID:', error);
         res.status(500).json({
             success: false,
             message: 'Server error'
