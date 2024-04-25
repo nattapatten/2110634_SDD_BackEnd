@@ -1,6 +1,8 @@
 const Notification = require("../models/Notification");
 const Advisor = require('../models/Advisor');
-const StudentSelectPath = require('../models/StudentSelectPath')
+const Student = require('../models/Student')
+
+
 
 exports.getNotifications = async (req, res, next) => {
     let query;
@@ -192,7 +194,7 @@ exports.getNotificationsByStudentD = async (req, res, next) => {
         console.log("studentID", studentID);
 
         // Find the student path by studentID
-        const studentPath = await StudentSelectPath.findOne({ studentID: studentID });
+        const studentPath = await Student.findOne({ studentID: studentID });
         if (!studentPath) {
             return res.status(404).json({
                 success: false,
@@ -206,7 +208,9 @@ exports.getNotificationsByStudentD = async (req, res, next) => {
         console.log("studentPath.courses", courses);
 
         // Extract courseIDs from the courses array
-        const courseIDs = courses.map(course => course.courseID);
+        const courseIDs = courses.filter(
+            (courseEnroll) => courseEnroll.enrollStatus != 0
+          ).map(course => course.courseID);
 
         console.log("Extracted courseIDs", courseIDs);
 
