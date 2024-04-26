@@ -56,6 +56,7 @@ exports.register = async (req, res, next) => {
 };
 
 //Verify OTP at registration step
+//Verify OTP at registration step
 exports.verifyOtpRegistration = async (req, res, next) => {
   const { email, otp } = req.body;
 
@@ -78,12 +79,11 @@ exports.verifyOtpRegistration = async (req, res, next) => {
   user.otpExpire = null;
 
   // await user.save();
-
-  res
-    .status(200)
-    .json({ success: true, message: "OTP verified. Registration complete." });
+  sendTokenResponse(user, 200, res);
+  // res
+  //   .status(200)
+  //   .json({ success: true, message: "OTP verified. Registration complete." });
 };
-
 // exports.register = async (req, res, next) => {
 //   try {
 //     const { studentID, name, email, password, phone, role } = req.body;
